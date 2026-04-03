@@ -38,9 +38,9 @@ class AnswerServiceTest {
 
         answer = new Answer();
         answer.setId(1L);
-        answer.setText("Test answer");   // ✔ corect
-        answer.setAuthor(user);          // ✔ obligatoriu
-        answer.setQuestion(question);    // ✔ obligatoriu
+        answer.setText("Test answer");   //
+        answer.setAuthor(user);          //
+        answer.setQuestion(question);    //
     }
 
     // create ans

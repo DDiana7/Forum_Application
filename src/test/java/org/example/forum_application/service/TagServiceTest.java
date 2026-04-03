@@ -97,7 +97,7 @@ class TagServiceTest {
         existing.setName("old");
 
         Tag updated = mock(Tag.class);
-        when(updated.getId()).thenReturn(1L);           // 🔥 IMPORTANT
+        when(updated.getId()).thenReturn(1L);
         when(updated.getName()).thenReturn("updated");
 
         when(tagRepository.findById(1L)).thenReturn(Optional.of(existing));
@@ -113,7 +113,7 @@ class TagServiceTest {
     @Test
     void shouldReturnNullWhenUpdatingNonExistingTag() {
         Tag updated = mock(Tag.class);
-        when(updated.getId()).thenReturn(1L);           // 🔥 IMPORTANT
+        when(updated.getId()).thenReturn(1L);
         when(updated.getName()).thenReturn("updated");
 
         when(tagRepository.findById(1L)).thenReturn(Optional.empty());
