@@ -47,7 +47,15 @@ public class UserService {
     }
 
     public void deleteById(int id) {
-        userRepository.deleteById(Long.valueOf(id));
+        Optional<User> userOptional = userRepository.findById(Long.valueOf(id));
+
+        if(userOptional.isPresent()) {
+            User user = userOptional.get();
+            user.setBanned(true);
+            user.setUsername("deleted_user_" + user.getId());
+            user.setEmail("deleted_user_" + user.getId() + "@deleted.com");
+            userRepository.save(user);
+        }
     }
 
     public User updateUser(int id, User updatedUser) {
