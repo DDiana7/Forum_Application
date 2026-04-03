@@ -1,5 +1,6 @@
 package org.example.forum_application.service;
 
+import jakarta.transaction.Transactional;
 import org.example.forum_application.model.Question;
 import org.example.forum_application.model.QuestionStatus;
 import org.example.forum_application.repository.QuestionRepository;
@@ -60,9 +61,20 @@ public class QuestionService {
         this.questionRepository.delete(question);
     }
 
+    @Transactional
     public void deleteById(int id) {
 
-        questionRepository.deleteById(Long.valueOf(id));
+        Optional<Question> questionOptional =  questionRepository.findById(Long.valueOf(id));
+
+        if(questionOptional.isPresent()) {
+            Question questionToDelete = questionOptional.get();
+
+            if(questionToDelete.getTags() != null) {
+                questionToDelete.getTags().clear();
+            }
+            questionRepository.delete(questionToDelete);
+        }
+
     }
 
 

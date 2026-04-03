@@ -1,5 +1,6 @@
 package org.example.forum_application.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -15,18 +16,22 @@ public class Answer {
     @JoinColumn(name = "user_id", nullable = false)
     private User author;
 
-    @Lob
+
     @Column(nullable = false)
     private String text;
+
 
     private String imageUrl;
 
     @Column
     private LocalDateTime createdAt;
 
+    @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "question_id", nullable = false)
+
     private Question question;
+
 
     public Answer() {}
     public Answer(User author, String text, String imageUrl,  Question question) {

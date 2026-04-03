@@ -3,6 +3,8 @@ package org.example.forum_application.model;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -20,7 +22,7 @@ public class Question {
     @Column(nullable = false)
     private String title;
 
-    @Lob
+
     @Column(nullable = false)
     private String text;
 
@@ -31,6 +33,9 @@ public class Question {
 
     @Column
     private LocalDateTime createdAt;
+
+    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Answer> answers = new ArrayList<>();
 
     // de pus Tag
     @ManyToMany
@@ -113,5 +118,12 @@ public class Question {
 
     public void setTags(Set<Tag> tags) {
         this.tags = tags;
+    }
+
+    public List<Answer> getAnswers() {
+        return answers;
+    }
+    public void setAnswers(List<Answer> answers) {
+        this.answers = answers;
     }
 }
