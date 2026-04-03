@@ -35,7 +35,7 @@ public class UserService {
     }
 
     public User createUser(User user) {
-        user.setCreatedAt(java.time.LocalDateTime.now());
+        //user.setCreatedAt(java.time.LocalDateTime.now());
         user.setBanned(false);
         user.setRole(org.example.forum_application.model.Role.USER);
 
