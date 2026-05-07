@@ -35,7 +35,7 @@ public class UserService {
     }
 
     public User createUser(User user) {
-        //user.setCreatedAt(java.time.LocalDateTime.now());
+        user.setCreatedAt(java.time.LocalDateTime.now());
         user.setBanned(false);
         user.setRole(org.example.forum_application.model.Role.USER);
 
@@ -70,6 +70,24 @@ public class UserService {
             user.setRole(updatedUser.getRole());
 
             return userRepository.save(user);
+        }
+
+        return null;
+    }
+
+    public User login(String email, String password) {
+        Optional<User> userOptional = userRepository.findByEmail(email);
+
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+
+            if (user.isBanned()) {
+                return null;
+            }
+
+            if (user.getPassword().equals(password)) {
+                return user;
+            }
         }
 
         return null;
