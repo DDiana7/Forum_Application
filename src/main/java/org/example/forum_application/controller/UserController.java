@@ -7,25 +7,32 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@CrossOrigin(origins = "http://localhost:4200")
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/users")
 public class UserController {
     @Autowired
     private UserService userService;
 
-    @GetMapping("/user")
+    @GetMapping
     public List<User> getAllUsers() {
         return this.userService.findAll();
     }
 
-    @GetMapping("/user/{id}")
+    @GetMapping("/{id}")
     public User getUserById(@PathVariable int id) {
         return userService.findById(id);
     }
 
-    @PostMapping("/user")
+    @PostMapping("/register")
     public User addUser(@RequestBody User user) {
         return this.userService.createUser(user);
+    }
+
+
+    @PostMapping("/login")
+    public User login(@RequestBody User user) {
+        return this.userService.login(user.getEmail(), user.getPassword());
     }
 
     @DeleteMapping("/user/delete/{id}")
