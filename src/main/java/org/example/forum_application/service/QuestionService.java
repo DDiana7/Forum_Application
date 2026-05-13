@@ -18,8 +18,7 @@ public class QuestionService {
     private QuestionRepository questionRepository;
 
     public List<Question> findAll() {
-        List<Question> questions =  (List<Question>)this.questionRepository.findAll();
-        return questions;
+        return this.questionRepository.findAllByOrderByCreatedAtDesc();
     }
 
     public Question findById(int id) {

@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { RouterLink, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { UserService } from '../../services/user';
 @Component({
@@ -15,7 +15,10 @@ export class Login {
     password: ''
   };
 
-  constructor(private userService: UserService) {}
+  constructor(
+      private userService: UserService,
+      private router:Router
+  ) {}
 
   login() {
     this.userService.login(this.user).subscribe({
@@ -26,14 +29,14 @@ export class Login {
           return;
         }
 
-        alert('Login successful');
-
         localStorage.setItem(
           'user',
           JSON.stringify(response)
         );
 
         console.log(response);
+
+        this.router.navigate(['/main']);
       },
 
       error: (error) => {

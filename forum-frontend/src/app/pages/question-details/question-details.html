@@ -1,0 +1,173 @@
+<div class="page">
+
+  <button class="back-button" (click)="goBack()">
+    Back to questions
+  </button>
+
+  <div class="question-card" *ngIf="question">
+
+    <div class="question-header">
+      <div class="question-author">
+        <strong>{{ question.author?.username }}</strong>
+        <span>{{ question.createdAt | date:'short' }}</span>
+      </div>
+
+      <div class="question-actions">
+    <span class="status">
+      {{ question.status }}
+    </span>
+
+        <div class="menu-wrapper" *ngIf="isQuestionAuthor()">
+          <button class="menu-button" (click)="toggleQuestionMenu()">
+            ...
+          </button>
+
+          <div class="post-menu" *ngIf="openedQuestionMenu">
+            <button (click)="startEditQuestion()">
+              Edit post
+            </button>
+
+            <button class="delete-option" (click)="deleteQuestion()">
+              Delete post
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="!editingQuestion">
+      <h1>{{ question.title }}</h1>
+
+      <p class="question-text">
+        {{ question.text }}
+      </p>
+
+      <img
+        *ngIf="question.imageUrl && question.imageUrl.startsWith('http')"
+        [src]="question.imageUrl"
+        class="question-image">
+
+      <div class="question-tags" *ngIf="question.tags && question.tags.length > 0">
+      <span *ngFor="let tag of question.tags">
+        #{{ tag.name }}
+      </span>
+      </div>
+    </div>
+
+    <div class="edit-box" *ngIf="editingQuestion">
+      <input
+        type="text"
+        [(ngModel)]="editQuestionTitle"
+        placeholder="Question title">
+
+      <textarea
+        [(ngModel)]="editQuestionText"
+        placeholder="Question text">
+    </textarea>
+
+      <input
+        type="text"
+        [(ngModel)]="editQuestionImageUrl"
+        placeholder="Image URL optional">
+
+      <div class="edit-actions">
+        <button class="cancel-button" (click)="cancelEditQuestion()">
+          Cancel
+        </button>
+
+        <button class="post-button" (click)="saveEditQuestion()">
+          Save
+        </button>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="answer-form">
+    <h2>Post an answer</h2>
+
+    <textarea
+      placeholder="Write your answer..."
+      [(ngModel)]="answerText">
+    </textarea>
+
+    <input
+      type="text"
+      placeholder="Image URL optional, must start with https://"
+      [(ngModel)]="answerImageUrl">
+
+    <button (click)="addAnswer()">
+      Post answer
+    </button>
+  </div>
+
+  <section>
+    <h2>Answers</h2>
+
+    <div class="answer-card" *ngFor="let answer of answers">
+
+      <div class="answer-header">
+        <div>
+          <strong>{{ answer.author?.username }}</strong>
+          <span>{{ answer.createdAt | date:'short' }}</span>
+        </div>
+
+        <div class="menu-wrapper" *ngIf="isAnswerAuthor(answer)">
+          <button class="menu-button" (click)="toggleAnswerMenu(answer.id)">
+            ...
+          </button>
+
+          <div class="post-menu" *ngIf="openedAnswerMenuId === answer.id">
+            <button (click)="startEditAnswer(answer)">
+              Edit answer
+            </button>
+
+            <button class="delete-option" (click)="deleteAnswer(answer.id)">
+              Delete answer
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="editingAnswerId !== answer.id">
+        <p>
+          {{ answer.text }}
+        </p>
+
+        <img
+          *ngIf="answer.imageUrl && answer.imageUrl.startsWith('http')"
+          [src]="answer.imageUrl"
+          class="answer-image">
+      </div>
+
+      <div class="edit-box" *ngIf="editingAnswerId === answer.id">
+    <textarea
+      [(ngModel)]="editAnswerText"
+      placeholder="Answer text">
+    </textarea>
+
+        <input
+          type="text"
+          [(ngModel)]="editAnswerImageUrl"
+          placeholder="Image URL optional">
+
+        <div class="edit-actions">
+          <button class="cancel-button" (click)="cancelEditAnswer()">
+            Cancel
+          </button>
+
+          <button class="post-button" (click)="saveEditAnswer(answer)">
+            Save
+          </button>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="empty-answers" *ngIf="answers.length === 0">
+      No answers yet.
+    </div>
+
+  </section>
+
+</div>
