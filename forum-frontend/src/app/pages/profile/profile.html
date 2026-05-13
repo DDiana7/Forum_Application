@@ -1,0 +1,76 @@
+<div class="page">
+
+  <button class="back-button" (click)="goBack()">
+    Back to forum
+  </button>
+
+  <div class="profile-card" *ngIf="user">
+
+    <div class="profile-header">
+      <div class="user-circle">
+        {{ user.username.charAt(0).toUpperCase() }}
+      </div>
+
+      <div>
+        <h1>{{ user.username }}</h1>
+        <p>{{ user.email }}</p>
+      </div>
+    </div>
+
+    <div class="profile-info">
+      <div>
+        <strong>Role</strong>
+        <p>{{ user.role }}</p>
+      </div>
+
+      <div>
+        <strong>Created at</strong>
+        <p>{{ user.createdAt | date:'short' }}</p>
+      </div>
+    </div>
+
+    <button class="logout-button" (click)="logout()">
+      Logout
+    </button>
+
+  </div>
+
+  <section>
+    <h2>My questions</h2>
+
+    <div
+      class="question-card"
+      *ngFor="let question of myQuestions"
+      (click)="openQuestion(question.id)">
+
+      <div class="question-header">
+        <div>
+          <strong>{{ question.author?.username }}</strong>
+          <span>{{ question.createdAt | date:'short' }}</span>
+        </div>
+
+        <span class="status">
+        {{ question.status }}
+      </span>
+      </div>
+
+      <h3>{{ question.title }}</h3>
+
+      <p>
+        {{ question.text }}
+      </p>
+
+      <div class="question-tags" *ngIf="question.tags && question.tags.length > 0">
+      <span *ngFor="let tag of question.tags">
+        #{{ tag.name }}
+      </span>
+      </div>
+
+    </div>
+
+    <div class="empty-message" *ngIf="myQuestions.length === 0">
+      You have not posted any questions yet.
+    </div>
+  </section>
+
+</div>

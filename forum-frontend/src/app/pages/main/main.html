@@ -1,0 +1,248 @@
+<div class="page">
+
+  <div class="top-bar">
+    <h1>Forum Application</h1>
+
+    <input
+      class="search-input"
+      type="text"
+      placeholder="Search question title..."
+      [(ngModel)]="searchText"
+      (input)="applyFilters()">
+
+    <button class="new-thread-button" (click)="openPostBox()">
+      New thread
+    </button>
+
+    <div class="profile-wrapper" *ngIf="user">
+      <div class="user-circle" (click)="toggleUserMenu()">
+        {{ user.username.charAt(0).toUpperCase() }}
+      </div>
+
+      <div class="profile-menu" *ngIf="isUserMenuOpen">
+        <p>{{ user.username }}</p>
+        <button (click)="goToProfile()">
+          Profile
+        </button>
+        <button (click)="logout()">Logout</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="collapsed-post-box" *ngIf="!isPostBoxOpen" (click)="openPostBox()">
+    <div class="fake-input">
+      What's your question today, {{ user?.username }}?
+    </div>
+  </div>
+
+  <div class="post-box" *ngIf="isPostBoxOpen">
+
+    <div class="expanded-header">
+      <div>
+        <strong>{{ user?.username }}</strong>
+        <p>Ask something to the community</p>
+      </div>
+
+      <button class="close-button" (click)="closePostBox()">×</button>
+    </div>
+
+    <input
+      type="text"
+      placeholder="Question title"
+      [(ngModel)]="title">
+
+    <textarea
+      placeholder="What do you want to ask?"
+      [(ngModel)]="text">
+    </textarea>
+
+    <input
+      type="text"
+      placeholder="Image URL optional"
+      [(ngModel)]="imageUrl">
+
+    <div class="tag-area">
+
+      <div class="selected-tags" *ngIf="selectedTags.length > 0">
+        <span class="selected-tag" *ngFor="let tag of selectedTags">
+          #{{ tag.name }}
+          <button (click)="removeTag(tag)">×</button>
+        </span>
+      </div>
+
+      <input
+        type="text"
+        placeholder="Add tags, for example: java, angular..."
+        [(ngModel)]="tagInput">
+
+      <div class="tag-suggestions" *ngIf="tagInput.trim() !== ''">
+
+        <div
+          class="tag-suggestion"
+          *ngFor="let tag of getFilteredTags()"
+          (click)="addExistingTag(tag)">
+          #{{ tag.name }}
+        </div>
+
+        <div class="tag-suggestion create" (click)="createAndAddTag()">
+          Add tag "{{ tagInput }}"
+        </div>
+
+      </div>
+    </div>
+
+    <div class="post-actions">
+      <button class="cancel-button" (click)="closePostBox()">
+        Cancel
+      </button>
+
+      <button class="post-button" (click)="addQuestion()">
+        Post question
+      </button>
+    </div>
+
+  </div>
+
+  <div class="filters-box">
+
+    <input
+      class="filter-input"
+      type="text"
+      placeholder="Filter by tag..."
+      [(ngModel)]="tagSearchText"
+      (input)="applyFilters()">
+
+    <input
+      class="filter-input"
+      type="text"
+      placeholder="Filter by user..."
+      [(ngModel)]="userSearchText"
+      (input)="applyFilters()">
+
+    <label class="my-questions-filter">
+      <input
+        type="checkbox"
+        [(ngModel)]="showOnlyMyQuestions"
+        (change)="applyFilters()">
+
+      My questions
+    </label>
+
+    <button class="clear-filters-button" (click)="clearFilters()">
+      Clear
+    </button>
+
+  </div>
+
+  <section>
+    <h2>Popular tags</h2>
+
+    <div class="tags-grid">
+      <div class="tag-card" *ngFor="let item of getPopularTags()">
+        <h3>#{{ item.tag.name }}</h3>
+        <p>{{ item.count }} questions</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Recent questions</h2>
+
+    <div
+      class="question-card"
+      *ngFor="let question of filteredQuestions"
+      [routerLink]="['/question', question.id]">
+
+      <div class="question-header">
+        <div>
+          <strong>{{ question.author?.username }}</strong>
+          <span>{{ question.createdAt | date:'short' }}</span>
+        </div>
+
+        <div class="question-header-actions">
+    <span class="status">
+      {{ question.status }}
+    </span>
+
+          <div class="menu-wrapper" *ngIf="isQuestionAuthor(question)">
+            <button
+              class="menu-button"
+              (click)="toggleQuestionMenu(question.id, $event)">
+              ...
+            </button>
+
+            <div class="post-menu" *ngIf="openedQuestionMenuId === question.id">
+              <button (click)="startEditQuestion(question, $event)">
+                Edit post
+              </button>
+
+              <button class="delete-option" (click)="deleteQuestion(question.id, $event)">
+                Delete post
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="editingQuestionId !== question.id">
+        <h3>{{ question.title }}</h3>
+
+        <p class="question-text">
+          {{ question.text }}
+        </p>
+
+        <img
+          *ngIf="question.imageUrl && question.imageUrl.startsWith('http')"
+          [src]="question.imageUrl"
+          class="question-image">
+      </div>
+
+      <div class="edit-box" *ngIf="editingQuestionId === question.id" (click)="$event.stopPropagation()">
+        <input
+          type="text"
+          [(ngModel)]="editTitle"
+          placeholder="Question title">
+
+        <textarea
+          [(ngModel)]="editText"
+          placeholder="Question text">
+  </textarea>
+
+        <input
+          type="text"
+          [(ngModel)]="editImageUrl"
+          placeholder="Image URL optional">
+
+        <div class="edit-actions">
+          <button class="cancel-button" (click)="cancelEditQuestion($event)">
+            Cancel
+          </button>
+
+          <button class="post-button" (click)="saveEditQuestion(question, $event)">
+            Save
+          </button>
+        </div>
+      </div>
+
+      <div class="question-tags" *ngIf="question.tags && question.tags.length > 0">
+        <span *ngFor="let tag of question.tags">
+          #{{ tag.name }}
+        </span>
+      </div>
+
+      <div class="answer-preview" *ngIf="getFirstAnswer(question)">
+        <strong>First answer:</strong>
+        <p>{{ getFirstAnswer(question).text }}</p>
+      </div>
+
+      <div class="answer-preview empty" *ngIf="!getFirstAnswer(question)">
+        No answers yet.
+      </div>
+
+    </div>
+    <div class="empty-results" *ngIf="filteredQuestions.length === 0">
+      No questions match your filters.
+    </div>
+  </section>
+
+</div>

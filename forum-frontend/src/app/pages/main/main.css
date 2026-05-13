@@ -1,0 +1,469 @@
+.page {
+  width: 80%;
+  margin: 35px auto;
+  font-family: Arial, sans-serif;
+  color: #111;
+}
+
+.top-bar {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 35px;
+}
+
+.top-bar h1 {
+  font-size: 28px;
+  font-weight: 800;
+  margin-right: 20px;
+  white-space: nowrap;
+}
+
+.search-input {
+  flex: 1;
+  padding: 13px 20px;
+  border: none;
+  border-radius: 25px;
+  background-color: #eeeeee;
+  font-size: 15px;
+  outline: none;
+}
+
+.new-thread-button {
+  background-color: #050018;
+  color: white;
+  border: none;
+  padding: 13px 25px;
+  border-radius: 25px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.profile-wrapper {
+  position: relative;
+}
+
+.user-circle {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  background-color: #dedede;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.profile-menu {
+  position: absolute;
+  right: 0;
+  top: 55px;
+  width: 160px;
+  background-color: white;
+  border: 1px solid #dddddd;
+  border-radius: 14px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+  padding: 12px;
+  z-index: 10;
+}
+
+.profile-menu p {
+  margin: 0 0 10px;
+  font-weight: bold;
+}
+
+.profile-menu button {
+  width: 100%;
+  padding: 9px;
+  margin-top: 6px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  background-color: #f0f0f0;
+  font-weight: bold;
+}
+
+.profile-menu button:hover {
+  background-color: #e4e4e4;
+}
+
+.collapsed-post-box {
+  background-color: #f5f5f5;
+  border: 1px solid #e2e2e2;
+  border-radius: 18px;
+  padding: 18px 20px;
+  margin-bottom: 35px;
+  cursor: pointer;
+}
+
+.collapsed-post-box:hover {
+  background-color: #eeeeee;
+}
+
+.fake-input {
+  background-color: white;
+  border-radius: 25px;
+  padding: 14px 20px;
+  color: #777;
+  font-size: 15px;
+}
+
+.post-box {
+  background-color: #f5f5f5;
+  padding: 22px;
+  border-radius: 18px;
+  border: 1px solid #e2e2e2;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 35px;
+}
+
+.expanded-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 5px;
+}
+
+.expanded-header p {
+  margin: 4px 0 0;
+  color: gray;
+  font-size: 13px;
+}
+
+.close-button {
+  margin-left: auto;
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  border: none;
+  background-color: #e5e5e5;
+  cursor: pointer;
+  font-size: 22px;
+}
+
+.post-box input,
+.post-box textarea {
+  padding: 13px;
+  border-radius: 12px;
+  border: 1px solid #dddddd;
+  font-size: 14px;
+  outline: none;
+}
+
+.post-box textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+.tag-area {
+  position: relative;
+}
+
+.tag-area input {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.selected-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.selected-tag {
+  background-color: #050018;
+  color: white;
+  padding: 7px 11px;
+  border-radius: 18px;
+  font-size: 13px;
+}
+
+.selected-tag button {
+  background: none;
+  border: none;
+  color: white;
+  margin-left: 6px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.tag-suggestions {
+  margin-top: 8px;
+  border: 1px solid #dddddd;
+  border-radius: 12px;
+  background-color: white;
+  overflow: hidden;
+}
+
+.tag-suggestion {
+  padding: 10px 14px;
+  cursor: pointer;
+}
+
+.tag-suggestion:hover {
+  background-color: #f0f0f0;
+}
+
+.tag-suggestion.create {
+  font-weight: bold;
+  color: #050018;
+}
+
+.post-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.cancel-button {
+  padding: 12px 20px;
+  border-radius: 25px;
+  border: none;
+  background-color: #e5e5e5;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.post-button {
+  padding: 12px 22px;
+  border-radius: 25px;
+  border: none;
+  background-color: #050018;
+  color: white;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+section {
+  margin-top: 35px;
+}
+
+section h2 {
+  font-size: 22px;
+  margin-bottom: 15px;
+}
+
+.tags-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+}
+
+.tag-card {
+  border: 1px solid #e2e2e2;
+  border-radius: 14px;
+  padding: 16px;
+  background-color: white;
+}
+
+.tag-card h3 {
+  margin: 0;
+  font-size: 16px;
+}
+
+.tag-card p {
+  margin: 6px 0 0;
+  color: gray;
+  font-size: 13px;
+}
+
+.question-card {
+  border: 1px solid #e2e2e2;
+  border-radius: 16px;
+  padding: 18px;
+  margin-bottom: 18px;
+  background-color: white;
+}
+
+.question-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.question-header span {
+  margin-left: 10px;
+  color: gray;
+  font-size: 13px;
+}
+
+.status {
+  background-color: #eeeeee;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  color: #333;
+}
+
+.question-card h3 {
+  margin: 14px 0 8px;
+  font-size: 20px;
+}
+
+.question-text {
+  color: #333;
+  line-height: 1.4;
+}
+
+.question-image {
+  max-width: 100%;
+  border-radius: 12px;
+  margin-top: 10px;
+}
+
+.question-tags {
+  margin-top: 12px;
+}
+
+.question-tags span {
+  background-color: #eeeeee;
+  padding: 6px 10px;
+  border-radius: 20px;
+  margin-right: 8px;
+  font-size: 13px;
+}
+
+.answer-preview {
+  margin-top: 15px;
+  background-color: #f8f8f8;
+  padding: 12px;
+  border-radius: 12px;
+}
+
+.answer-preview p {
+  margin: 6px 0 0;
+}
+
+.answer-preview.empty {
+  color: gray;
+}
+
+.question-card {
+  cursor: pointer;
+}
+
+.question-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.menu-wrapper {
+  position: relative;
+}
+
+.menu-button {
+  border: none;
+  background-color: #eeeeee;
+  border-radius: 50%;
+  width: 34px;
+  height: 34px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.post-menu {
+  position: absolute;
+  right: 0;
+  top: 40px;
+  width: 150px;
+  background-color: white;
+  border: 1px solid #dddddd;
+  border-radius: 12px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+  padding: 8px;
+  z-index: 20;
+}
+
+.post-menu button {
+  width: 100%;
+  border: none;
+  background-color: white;
+  padding: 10px;
+  text-align: left;
+  cursor: pointer;
+  border-radius: 8px;
+  font-weight: bold;
+}
+
+.post-menu button:hover {
+  background-color: #f0f0f0;
+}
+
+.post-menu .delete-option {
+  color: #b00020;
+}
+
+.edit-box {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.edit-box input,
+.edit-box textarea {
+  padding: 12px;
+  border-radius: 12px;
+  border: 1px solid #dddddd;
+  font-size: 14px;
+}
+
+.edit-box textarea {
+  min-height: 90px;
+  resize: vertical;
+}
+
+.edit-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+.filters-box {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 35px;
+  flex-wrap: wrap;
+}
+
+.filter-input {
+  padding: 12px 16px;
+  border-radius: 25px;
+  border: 1px solid #dddddd;
+  background-color: white;
+  font-size: 14px;
+  outline: none;
+  min-width: 190px;
+}
+
+.filter-input:focus {
+  border-color: #999999;
+}
+
+.my-questions-filter {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: #f5f5f5;
+  padding: 12px 16px;
+  border-radius: 25px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.clear-filters-button {
+  border: none;
+  background-color: #eeeeee;
+  padding: 12px 18px;
+  border-radius: 25px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.clear-filters-button:hover {
+  background-color: #dddddd;
+}
