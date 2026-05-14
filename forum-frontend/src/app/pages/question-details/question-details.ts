@@ -271,4 +271,100 @@ export class QuestionDetails implements OnInit {
       }
     });
   }
+
+
+
+  // --- VOTE INTREBARE ---
+  getQuestionVotesKey(): string {
+    return `questionVotes_${this.user?.id}`;
+  }
+
+  getQuestionVotes(): Record<number, 'UPVOTE' | 'DOWNVOTE'> {
+    const saved = localStorage.getItem(this.getQuestionVotesKey());
+    return saved ? JSON.parse(saved) : {};
+  }
+
+  hasVotedQuestion(voteType: 'UPVOTE' | 'DOWNVOTE'): boolean {
+    if (!this.question?.id || !this.user) return false;
+    return this.getQuestionVotes()[this.question.id] === voteType;
+  }
+
+  voteQuestion(voteType: 'UPVOTE' | 'DOWNVOTE') {
+    if (!this.user) {
+      alert('You must be logged in to vote');
+      this.router.navigate(['/login']);
+      return;
+    }
+    if (!this.question?.id) return;
+    if (this.hasVotedQuestion(voteType)) return;
+
+    this.questionService.voteQuestion(this.question.id, this.user.id, voteType).subscribe({
+      next: (newScore) => {
+        this.question!.voteScore = newScore;
+        const votes = this.getQuestionVotes();
+        votes[this.question!.id!] = voteType;
+        localStorage.setItem(this.getQuestionVotesKey(), JSON.stringify(votes));
+        this.cdr.detectChanges();
+      },
+      error: () => alert('Nu poți vota această întrebare')
+    });
+  }
+
+  // --- VOTE RASPUNS ---
+  getAnswerVotesKey(): string {
+    return `answerVotes_${this.user?.id}`;
+  }
+
+  getAnswerVotes(): Record<number, 'UPVOTE' | 'DOWNVOTE'> {
+    const saved = localStorage.getItem(this.getAnswerVotesKey());
+    return saved ? JSON.parse(saved) : {};
+  }
+
+  hasVotedAnswer(answerId: number | undefined, voteType: 'UPVOTE' | 'DOWNVOTE'): boolean {
+    if (!answerId || !this.user) return false;
+    return this.getAnswerVotes()[answerId] === voteType;
+  }
+
+  voteAnswer(answer: Answer, voteType: 'UPVOTE' | 'DOWNVOTE') {
+    if (!this.user) {
+      alert('You must be logged in to vote');
+      this.router.navigate(['/login']);
+      return;
+    }
+    if (!answer.id) return;
+
+    // blochează doar dacă e același vot
+    if (this.hasVotedAnswer(answer.id, voteType)) return;
+
+    this.answerService.voteAnswer(answer.id, this.user.id, voteType).subscribe({
+      next: (newScore) => {
+        answer.voteScore = newScore;
+        const votes = this.getAnswerVotes();
+        votes[answer.id!] = voteType; // suprascrie votul vechi
+        localStorage.setItem(this.getAnswerVotesKey(), JSON.stringify(votes));
+
+        this.answers.sort((a, b) => {
+          const scorA = a.voteScore ?? 0;
+          const scorB = b.voteScore ?? 0;
+          return scorB - scorA; // cel cu scor mai mare apare primul
+        });
+        this.answers = [...this.answers];
+
+        this.cdr.detectChanges();
+      },
+      error: () => alert('Nu poți vota acest răspuns')
+    });
+  }
+
+  acceptAnswer(answer: Answer) {
+    if (!this.user || !this.question?.id) return;
+
+    this.answerService.acceptAnswer(answer.id!, this.user.id).subscribe({
+      next: (updatedQuestion) => {
+        this.question!.status = updatedQuestion.status;
+        this.cdr.detectChanges();
+      },
+      error: () => alert('Nu poți accepta acest răspuns')
+    });
+  }
 }
