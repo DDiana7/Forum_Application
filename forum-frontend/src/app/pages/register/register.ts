@@ -1,14 +1,20 @@
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { UserService } from '../../services/user';
+import {RouterLink} from '@angular/router';
+import { Router } from '@angular/router';
+import { NgIf } from '@angular/common';
 
 @Component({
   selector: 'app-register',
-  imports: [FormsModule],
+  imports: [FormsModule, RouterLink, NgIf],
   templateUrl: './register.html',
   styleUrl: './register.css'
 })
 export class Register {
+
+  showSuccessPopup = false;
+  errorMessage = '';
 
   user = {
     username: '',
@@ -16,18 +22,21 @@ export class Register {
     password: ''
   };
 
-  constructor(private userService: UserService) {}
+  constructor(private userService: UserService, private router: Router) {}
 
   register() {
     this.userService.register(this.user).subscribe({
-      next: (response) => {
-        alert('Register successful');
-        console.log(response);
+      next: () => {
+        this.showSuccessPopup = true;
       },
       error: (error) => {
-        alert('Register failed');
+        this.errorMessage = 'Register failed. Try another email or username.';
         console.log(error);
       }
     });
+  }
+
+  goToLogin() {
+    this.router.navigate(['/login']);
   }
 }

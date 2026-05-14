@@ -7,6 +7,22 @@
   <div class="question-card" *ngIf="question">
 
     <div class="question-header">
+
+      <div class="vote-box">
+        <button
+          type="button"
+          (click)="voteQuestion('UPVOTE')"
+          [disabled]="hasVotedQuestion('UPVOTE')"
+          [class.voted]="hasVotedQuestion('UPVOTE')">▲</button>
+        <span>{{ question.voteScore ?? 0 }}</span>
+        <button
+          type="button"
+          (click)="voteQuestion('DOWNVOTE')"
+          [disabled]="hasVotedQuestion('DOWNVOTE')"
+          [class.voted]="hasVotedQuestion('DOWNVOTE')">▼</button>
+      </div>
+
+
       <div class="question-author">
         <strong>{{ question.author?.username }}</strong>
         <span>{{ question.createdAt | date:'short' }}</span>
@@ -107,6 +123,28 @@
     <div class="answer-card" *ngFor="let answer of answers">
 
       <div class="answer-header">
+
+        <button
+          *ngIf="isQuestionAuthor() && question?.status !== 'SOLVED'"
+          class="accept-button"
+          (click)="acceptAnswer(answer)">
+          ✓ Accept answer
+        </button>
+
+        <div class="vote-box">
+          <button
+            type="button"
+            (click)="voteAnswer(answer, 'UPVOTE')"
+            [disabled]="hasVotedAnswer(answer.id, 'UPVOTE')"
+            [class.voted]="hasVotedAnswer(answer.id, 'UPVOTE')">▲</button>
+          <span>{{ answer.voteScore ?? 0 }}</span>
+          <button
+            type="button"
+            (click)="voteAnswer(answer, 'DOWNVOTE')"
+            [disabled]="hasVotedAnswer(answer.id, 'DOWNVOTE')"
+            [class.voted]="hasVotedAnswer(answer.id, 'DOWNVOTE')">▼</button>
+        </div>
+
         <div>
           <strong>{{ answer.author?.username }}</strong>
           <span>{{ answer.createdAt | date:'short' }}</span>

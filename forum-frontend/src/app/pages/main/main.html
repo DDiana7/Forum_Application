@@ -14,6 +14,17 @@
       New thread
     </button>
 
+
+<!--    <div class="auth-buttons" *ngIf="!user">-->
+<!--        <a routerLink="/login">Login</a>-->
+<!--        <a routerLink="/register">Register</a>-->
+<!--      </div>-->
+    <a class="login-button" routerLink="/login" *ngIf="!user">
+      Login
+    </a>
+
+
+
     <div class="profile-wrapper" *ngIf="user">
       <div class="user-circle" (click)="toggleUserMenu()">
         {{ user.username.charAt(0).toUpperCase() }}
@@ -29,13 +40,13 @@
     </div>
   </div>
 
-  <div class="collapsed-post-box" *ngIf="!isPostBoxOpen" (click)="openPostBox()">
+  <div class="collapsed-post-box" *ngIf="user && !isPostBoxOpen" (click)="openPostBox()">
     <div class="fake-input">
       What's your question today, {{ user?.username }}?
     </div>
   </div>
 
-  <div class="post-box" *ngIf="isPostBoxOpen">
+  <div class="post-box" *ngIf="user && isPostBoxOpen">
 
     <div class="expanded-header">
       <div>
@@ -44,6 +55,54 @@
       </div>
 
       <button class="close-button" (click)="closePostBox()">×</button>
+    </div>
+
+
+
+    <div class="tag-popup-overlay" *ngIf="isTagPopupOpen">
+      <div class="tag-popup">
+
+        <div class="tag-popup-header">
+          <div>
+            <h2>Choose tags</h2>
+            <p>Select existing tags or create a new one.</p>
+          </div>
+
+          <button class="close-button" (click)="closeTagPopup()">×</button>
+        </div>
+
+        <input
+          class="tag-popup-search"
+          type="text"
+          placeholder="Search tag..."
+          [(ngModel)]="tagSearchPopupText">
+
+        <div class="popup-tags-list">
+          <button
+            class="popup-tag"
+            *ngFor="let tag of getPopupTags()"
+            (click)="addExistingTag(tag)">
+            #{{ tag.name }}
+          </button>
+        </div>
+
+        <button
+          class="show-all-tags-button"
+          *ngIf="!showAllTags && tagSearchPopupText.trim() === ''"
+          (click)="showAllTags = true">
+          View all tags
+        </button>
+
+
+
+        <button
+          class="create-tag-popup-button"
+          *ngIf="tagSearchPopupText.trim() !== '' && !tagExistsInPopupSearch()"
+          (click)="createTagFromPopup()">
+          Add new tag "{{ tagSearchPopupText }}"
+        </button>
+
+      </div>
     </div>
 
     <input
@@ -64,31 +123,16 @@
     <div class="tag-area">
 
       <div class="selected-tags" *ngIf="selectedTags.length > 0">
-        <span class="selected-tag" *ngFor="let tag of selectedTags">
-          #{{ tag.name }}
-          <button (click)="removeTag(tag)">×</button>
-        </span>
+    <span class="selected-tag" *ngFor="let tag of selectedTags">
+      #{{ tag.name }}
+      <button type="button" (click)="removeTag(tag)">×</button>
+    </span>
       </div>
 
-      <input
-        type="text"
-        placeholder="Add tags, for example: java, angular..."
-        [(ngModel)]="tagInput">
+      <button class="choose-tags-button" type="button" (click)="openTagPopup()">
+        Choose tags
+      </button>
 
-      <div class="tag-suggestions" *ngIf="tagInput.trim() !== ''">
-
-        <div
-          class="tag-suggestion"
-          *ngFor="let tag of getFilteredTags()"
-          (click)="addExistingTag(tag)">
-          #{{ tag.name }}
-        </div>
-
-        <div class="tag-suggestion create" (click)="createAndAddTag()">
-          Add tag "{{ tagInput }}"
-        </div>
-
-      </div>
     </div>
 
     <div class="post-actions">
@@ -119,7 +163,7 @@
       [(ngModel)]="userSearchText"
       (input)="applyFilters()">
 
-    <label class="my-questions-filter">
+    <label class="my-questions-filter" *ngIf="user">
       <input
         type="checkbox"
         [(ngModel)]="showOnlyMyQuestions"
@@ -152,6 +196,24 @@
       class="question-card"
       *ngFor="let question of filteredQuestions"
       [routerLink]="['/question', question.id]">
+
+      <div class="vote-box" (click)="$event.stopPropagation()">
+        <button
+          type="button"
+          (click)="voteQuestion(question, 'UPVOTE', $event)"
+          [disabled]="hasVoted(question.id, 'UPVOTE')"
+          [class.voted]="hasVoted(question.id, 'UPVOTE')">
+          ▲
+        </button>
+        <span>{{ question.voteScore ?? 0 }}</span>
+        <button
+          type="button"
+          (click)="voteQuestion(question, 'DOWNVOTE', $event)"
+          [disabled]="hasVoted(question.id, 'DOWNVOTE')"
+          [class.voted]="hasVoted(question.id, 'DOWNVOTE')">
+          ▼
+        </button>
+      </div>
 
       <div class="question-header">
         <div>
