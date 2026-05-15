@@ -5,6 +5,7 @@ import org.example.forum_application.model.Question;
 import org.example.forum_application.model.QuestionStatus;
 import org.example.forum_application.repository.AnswerRepository;
 import org.example.forum_application.repository.QuestionRepository;
+import org.example.forum_application.repository.VoteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +22,9 @@ public class AnswerService {
     @Autowired
     private QuestionRepository questionRepository;
 
+    @Autowired
+    private VoteRepository voteRepository;
+
     public List<Answer> findAll() {
         List<Answer> answers = (List<Answer>) this.answerRepository.findAll();
         return answers;
@@ -35,7 +39,7 @@ public class AnswerService {
     }
 
     public List<Answer> findByQuestionId(int questionId) {
-        return answerRepository.findByQuestionId(Long.valueOf(questionId));
+        return answerRepository.findByQuestionIdOrderByVoteScoreDesc(Long.valueOf(questionId));
     }
 
     public Answer createAnswer(Answer answer) {
@@ -74,10 +78,28 @@ public class AnswerService {
     }
 
     public void deleteAnswer(Answer answer) {
+
+        voteRepository.deleteById(answer.getId());
         answerRepository.delete(answer);
     }
 
     public void deleteById(int id) {
+        voteRepository.deleteById(Long.valueOf(id));
         answerRepository.deleteById(Long.valueOf(id));
+    }
+
+
+    public Question acceptAnswer(Long answerId, Long userId) {
+        Answer answer = answerRepository.findById(answerId).orElse(null);
+        if (answer == null) return null;
+
+        Question question = answer.getQuestion();
+        if (question == null) return null;
+
+        // doar autorul poate accepta
+        if (!question.getAuthor().getId().equals(userId)) return null;
+
+        question.setStatus(QuestionStatus.SOLVED);
+        return questionRepository.save(question);
     }
 }

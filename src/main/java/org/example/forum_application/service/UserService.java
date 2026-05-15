@@ -3,6 +3,7 @@ package org.example.forum_application.service;
 import org.example.forum_application.model.User;
 import org.example.forum_application.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,9 +14,11 @@ public class UserService {
 
     @Autowired
     private UserRepository userRepository;
+    private PasswordEncoder passwordEncoder;
 
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public List<User> findAll() {
@@ -38,6 +41,8 @@ public class UserService {
         user.setCreatedAt(java.time.LocalDateTime.now());
         user.setBanned(false);
         user.setRole(org.example.forum_application.model.Role.USER);
+
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
 
         return this.userRepository.save(user);
     }
@@ -85,7 +90,7 @@ public class UserService {
                 return null;
             }
 
-            if (user.getPassword().equals(password)) {
+            if (passwordEncoder.matches(password, user.getPassword())) {
                 return user;
             }
         }

@@ -1,8 +1,10 @@
 package org.example.forum_application.controller;
 
 import org.example.forum_application.model.Answer;
+import org.example.forum_application.model.Question;
 import org.example.forum_application.service.AnswerService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -44,6 +46,16 @@ public class AnswerController {
     @PutMapping("/update/{id}")
     public Answer updateAnswer(@PathVariable int id, @RequestBody Answer answer) {
         return this.answerService.updateAnswer(id, answer);
+    }
+
+
+    @PostMapping("/accept/{answerId}")
+    public ResponseEntity<Question> acceptAnswer(@PathVariable Long answerId, @RequestParam Long userId) {
+        Question question = answerService.acceptAnswer(answerId, userId);
+        if (question == null) {
+            return ResponseEntity.badRequest().build();
+        }
+        return ResponseEntity.ok(question);
     }
 
 }

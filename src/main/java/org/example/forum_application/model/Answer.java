@@ -26,9 +26,14 @@ public class Answer {
     @Column
     private LocalDateTime createdAt;
 
+    @Column(nullable = false)
+    private Integer voteScore = 0;
+
     @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "question_id", nullable = false)
+
+
 
     private Question question;
 
@@ -85,6 +90,14 @@ public class Answer {
 
     public Question getQuestion() {
         return question;
+    }
+
+    public Integer getVoteScore() {
+        return voteScore;
+    }
+
+    public void setVoteScore(Integer voteScore) {
+        this.voteScore = voteScore;
     }
 
     public void setQuestion(Question question) {

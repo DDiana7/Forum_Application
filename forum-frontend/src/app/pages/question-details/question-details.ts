@@ -348,6 +348,7 @@ export class QuestionDetails implements OnInit {
           const scorB = b.voteScore ?? 0;
           return scorB - scorA; // cel cu scor mai mare apare primul
         });
+        // copiem o noua lista sa se vada modificarea
         this.answers = [...this.answers];
 
         this.cdr.detectChanges();

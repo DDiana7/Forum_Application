@@ -10,5 +10,7 @@ import java.util.List;
     public interface AnswerRepository extends CrudRepository<Answer, Long> {
         List<Answer> findByQuestionId(Long questionId);
 
+        List<Answer> findByQuestionIdOrderByVoteScoreDesc(Long questionId);
+
     }
 

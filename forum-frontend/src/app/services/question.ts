@@ -15,6 +15,7 @@ export interface Question {
   voteScore?: number;
 }
 
+//poate fi folosit (injectat) oriunde in aplicatie
 @Injectable({
   providedIn: 'root'
 })
@@ -22,6 +23,7 @@ export class QuestionService {
 
   private apiUrl = 'http://localhost:8080/question';
 
+  //http client face post get
   constructor(private http: HttpClient) {}
 
   getAllQuestions(): Observable<Question[]> {

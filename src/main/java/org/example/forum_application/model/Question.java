@@ -34,6 +34,9 @@ public class Question {
     @Column
     private LocalDateTime createdAt;
 
+    @Column(nullable = false)
+    private Integer voteScore = 0;
+
     @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Answer> answers = new ArrayList<>();
 
@@ -45,6 +48,7 @@ public class Question {
             inverseJoinColumns = @JoinColumn(name = "tag_id")
     )
     private Set<Tag> tags;
+
 
     public Question() {}
 
@@ -118,6 +122,14 @@ public class Question {
 
     public void setTags(Set<Tag> tags) {
         this.tags = tags;
+    }
+
+    public Integer getVoteScore() {
+        return voteScore;
+    }
+
+    public void setVoteScore(Integer voteScore) {
+        this.voteScore = voteScore;
     }
 
     public List<Answer> getAnswers() {

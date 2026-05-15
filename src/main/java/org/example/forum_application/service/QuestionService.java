@@ -4,6 +4,7 @@ import jakarta.transaction.Transactional;
 import org.example.forum_application.model.Question;
 import org.example.forum_application.model.QuestionStatus;
 import org.example.forum_application.repository.QuestionRepository;
+import org.example.forum_application.repository.VoteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +17,8 @@ public class QuestionService {
 
     @Autowired
     private QuestionRepository questionRepository;
+    @Autowired
+    private VoteRepository voteRepository;
 
     public List<Question> findAll() {
         return this.questionRepository.findAllByOrderByCreatedAtDesc();
@@ -57,6 +60,7 @@ public class QuestionService {
 
     public void deleteQuestion(Question question) {
 
+        voteRepository.deleteByQuestion_Id(question.getId());
         this.questionRepository.delete(question);
     }
 
@@ -71,6 +75,7 @@ public class QuestionService {
             if(questionToDelete.getTags() != null) {
                 questionToDelete.getTags().clear();
             }
+            voteRepository.deleteByQuestion_Id(questionToDelete.getId());
             questionRepository.delete(questionToDelete);
         }
 
