@@ -9,6 +9,8 @@ export interface Answer {
   createdAt?: string;
   author?: any;
   question?: any;
+  voteScore?: number;
+
 }
 
 @Injectable({
@@ -34,5 +36,22 @@ export class AnswerService {
 
   deleteAnswer(id: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/delete/${id}`);
+  }
+
+
+
+  voteAnswer(answerId: number, userId: number, voteType: string): Observable<number> {
+    return this.http.post<number>(
+      `http://localhost:8080/vote/answer/${answerId}?userId=${userId}&voteType=${voteType}`,
+      {}
+    );
+  }
+
+
+  acceptAnswer(answerId: number, userId: number): Observable<any> {
+    return this.http.post(
+      `http://localhost:8080/answer/accept/${answerId}?userId=${userId}`,
+      {}
+    );
   }
 }

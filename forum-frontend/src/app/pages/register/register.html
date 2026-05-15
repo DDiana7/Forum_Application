@@ -1,12 +1,50 @@
-<h1>Register</h1>
+<div class="register-page">
+  <div class="register-card">
 
-<input type="text" placeholder="Username" [(ngModel)]="user.username">
-<br><br>
+    <h1>Register</h1>
 
-<input type="email" placeholder="Email" [(ngModel)]="user.email">
-<br><br>
+    <p class="subtitle">
+      Create an account to join the forum.
+    </p>
 
-<input type="password" placeholder="Password" [(ngModel)]="user.password">
-<br><br>
+    <input
+      type="text"
+      placeholder="Username"
+      [(ngModel)]="user.username">
 
-<button (click)="register()">Register</button>
+    <input
+      type="email"
+      placeholder="Email"
+      [(ngModel)]="user.email">
+
+    <input
+      type="password"
+      placeholder="Password"
+      [(ngModel)]="user.password">
+
+    <button class="register-submit" (click)="register()">
+      Register
+    </button>
+
+    <p class="login-link">
+      Already have an account?
+      <a routerLink="/login">Login</a>
+    </p>
+
+    <div class="popup-overlay" *ngIf="showSuccessPopup">
+      <div class="popup-card">
+        <h2>Register successful</h2>
+        <p>Your account was created successfully.</p>
+
+        <button (click)="goToLogin()">
+          Login
+        </button>
+      </div>
+    </div>
+
+    <p class="error-message" *ngIf="errorMessage">
+      {{ errorMessage }}
+    </p>
+
+  </div>
+</div>

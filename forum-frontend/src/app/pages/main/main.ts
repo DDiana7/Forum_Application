@@ -16,6 +16,10 @@ export class Main implements OnInit {
   questions: Question[] = [];
   tags: Tag[] = [];
 
+  isTagPopupOpen = false;
+  showAllTags = false;
+  tagSearchPopupText = '';
+
   filteredQuestions: Question[] = [];
 
   searchText = '';
@@ -59,7 +63,16 @@ export class Main implements OnInit {
     this.loadTags();
   }
 
+  isLoggedIn(): boolean{
+    return this.user !== null
+  }
+
   openPostBox() {
+    if(!this.user){
+      alert('You must be logged in to ask a question');
+      this.router.navigate(['/login']);
+      return;
+    }
     this.isPostBoxOpen = true;
   }
 
@@ -266,8 +279,12 @@ export class Main implements OnInit {
 
   logout() {
     localStorage.removeItem('user');
+    this.user = null;
+    this.showOnlyMyQuestions = false;
+    this.applyFilters();
     this.router.navigate(['']);
   }
+
   toggleQuestionMenu(questionId: number | undefined, event: Event) {
     event.stopPropagation();
 
@@ -352,6 +369,10 @@ export class Main implements OnInit {
   }
 
   goToProfile() {
+    if(!this.user){
+      this.router.navigate(['/login']);
+      return;
+    }
     this.router.navigate(['/profile']);
   }
 
@@ -378,4 +399,136 @@ export class Main implements OnInit {
       .sort((a, b) => b.count - a.count)
       .slice(0, 4);
   }
+
+  openTagPopup() {
+    this.isTagPopupOpen = true;
+    this.showAllTags = false;
+    this.tagSearchPopupText = '';
+  }
+
+  closeTagPopup() {
+    this.isTagPopupOpen = false;
+  }
+
+  getPopupTags() {
+    let availableTags = this.tags.filter(tag =>
+      !this.selectedTags.some(selectedTag => selectedTag.id === tag.id)
+    );
+
+    if (this.tagSearchPopupText.trim() !== '') {
+      const search = this.tagSearchPopupText.toLowerCase();
+
+      availableTags = availableTags.filter(tag =>
+        tag.name.toLowerCase().includes(search)
+      );
+    }
+
+    if (!this.showAllTags && this.tagSearchPopupText.trim() === '') {
+      return this.getPopularTags()
+        .map(item => item.tag)
+        .filter(tag =>
+          !this.selectedTags.some(selectedTag => selectedTag.id === tag.id)
+        );
+    }
+
+    return availableTags;
+  }
+
+  tagExistsInPopupSearch() {
+    const search = this.tagSearchPopupText.trim().toLowerCase();
+
+    return this.tags.some(tag =>
+      tag.name.toLowerCase() === search
+    );
+  }
+
+  createTagFromPopup() {
+    const newTagName = this.tagSearchPopupText.trim();
+
+    if (newTagName === '') {
+      return;
+    }
+
+    const existingTag = this.tags.find(
+      tag => tag.name.toLowerCase() === newTagName.toLowerCase()
+    );
+
+    if (existingTag) {
+      this.addExistingTag(existingTag);
+      this.closeTagPopup();
+      return;
+    }
+
+    const newTag: Tag = {
+      name: newTagName
+    };
+
+    this.tagService.addTag(newTag).subscribe({
+      next: (createdTag) => {
+        this.tags.push(createdTag);
+        this.selectedTags.push(createdTag);
+        this.tagSearchPopupText = '';
+        this.closeTagPopup();
+      },
+      error: (error) => {
+        alert('Could not create tag');
+        console.log(error);
+      }
+    });
+  }
+
+  getUserVotesKey(): string {
+    return `questionVotes_${this.user?.id}`;
+  }
+
+  getUserQuestionVotes(): Record<number, 'UPVOTE' | 'DOWNVOTE'> {
+    const saved = localStorage.getItem(this.getUserVotesKey());
+    return saved ? JSON.parse(saved) : {};
+  }
+
+  saveQuestionVote(questionId: number, voteType: 'UPVOTE' | 'DOWNVOTE') {
+    const votes = this.getUserQuestionVotes();
+    votes[questionId] = voteType;
+    localStorage.setItem(this.getUserVotesKey(), JSON.stringify(votes));
+  }
+
+  hasVoted(questionId: number | undefined, voteType: 'UPVOTE' | 'DOWNVOTE'): boolean {
+    if (!questionId || !this.user) return false;
+    const votes = this.getUserQuestionVotes();
+    return votes[questionId] === voteType;
+  }
+
+
+  voteQuestion(question: Question, voteType: 'UPVOTE' | 'DOWNVOTE', event: Event) {
+    event.stopPropagation();
+
+    if (!this.user) {
+      alert('You must be logged in to vote');
+      this.router.navigate(['/login']);
+      return;
+    }
+
+    if (!question.id) return;
+
+
+    this.questionService.voteQuestion(question.id, this.user.id, voteType).subscribe({
+      next: (newScore) => {
+        this.saveQuestionVote(question.id!, voteType); // în loc de userQuestionVotes.set
+        const index = this.filteredQuestions.findIndex(q => q.id === question.id);
+        if (index !== -1) {
+          this.filteredQuestions[index] = { ...question, voteScore: newScore };
+        }
+        const index2 = this.questions.findIndex(q => q.id === question.id);
+        if (index2 !== -1) {
+          this.questions[index2] = { ...question, voteScore: newScore };
+        }
+        this.cdr.detectChanges();
+      },
+      error: () => {
+        alert('You cannot vote this question');
+      }
+    });
+  }
+
+
 }

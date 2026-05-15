@@ -1,3 +1,4 @@
+
 .page {
   width: 75%;
   margin: 35px auto;
@@ -15,28 +16,49 @@
   margin-bottom: 20px;
 }
 
-.question-card {
+.back-button:hover {
+  background-color: #dddddd;
+}
+
+.question-card,
+.answer-card {
+  position: relative;
   border: 1px solid #e2e2e2;
-  border-radius: 18px;
-  padding: 24px;
   background-color: white;
+  padding: 22px 22px 22px 82px;
+}
+
+.question-card {
+  border-radius: 18px;
   margin-bottom: 25px;
 }
 
-.question-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 15px;
+.answer-card {
+  border-radius: 16px;
+  margin-bottom: 15px;
 }
 
-.question-author {
+.question-header,
+.answer-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.question-header {
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.question-author,
+.answer-header > div:not(.vote-box):not(.menu-wrapper) {
   display: flex;
   align-items: center;
   gap: 10px;
 }
 
-.question-author span {
+.question-author span,
+.answer-header span {
   color: gray;
   font-size: 13px;
 }
@@ -49,11 +71,12 @@
 }
 
 .status {
-  background-color: #eeeeee;
+  background-color: #eeeaff;
+  color: #2d145f;
   padding: 7px 15px;
   border-radius: 20px;
   font-size: 13px;
-  color: #555;
+  font-weight: bold;
   white-space: nowrap;
 }
 
@@ -79,11 +102,57 @@
 }
 
 .question-tags span {
-  background-color: #eeeeee;
+  background-color: #eeeaff;
+  color: #2d145f;
   padding: 7px 11px;
   border-radius: 20px;
   margin-right: 8px;
   font-size: 13px;
+  font-weight: bold;
+}
+
+.vote-box {
+  position: absolute;
+  left: 22px;
+  top: 22px;
+  width: 38px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.vote-box button {
+  width: 34px;
+  height: 31px;
+  border: none;
+  border-radius: 10px;
+  background-color: #eeeaff;
+  color: #2d145f;
+  cursor: pointer;
+  font-weight: bold;
+  transition: 0.2s;
+}
+
+.vote-box button:hover:not(:disabled) {
+  background-color: #050018;
+  color: white;
+}
+
+.vote-box button.voted {
+  background-color: #050018;
+  color: white;
+}
+
+.vote-box button:disabled {
+  cursor: not-allowed;
+  opacity: 0.85;
+}
+
+.vote-box span {
+  font-weight: 900;
+  color: #050018;
+  font-size: 15px;
 }
 
 .answer-form {
@@ -107,12 +176,21 @@
 }
 
 .answer-form textarea,
-.answer-form input {
+.answer-form input,
+.edit-box input,
+.edit-box textarea {
   padding: 13px;
   border-radius: 12px;
   border: 1px solid #dddddd;
   font-size: 14px;
   outline: none;
+}
+
+.answer-form textarea:focus,
+.answer-form input:focus,
+.edit-box input:focus,
+.edit-box textarea:focus {
+  border-color: #2d145f;
 }
 
 .answer-form button {
@@ -126,29 +204,9 @@
   cursor: pointer;
 }
 
-.answer-card {
-  border: 1px solid #e2e2e2;
-  border-radius: 16px;
-  padding: 18px;
-  margin-bottom: 15px;
-  background-color: white;
-}
-
-.answer-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.answer-header div {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.answer-header span {
-  color: gray;
-  font-size: 13px;
+.answer-form button:hover,
+.post-button:hover {
+  background-color: #2d145f;
 }
 
 .empty-answers {
@@ -160,6 +218,7 @@
 
 .menu-wrapper {
   position: relative;
+  margin-left: auto;
 }
 
 .menu-button {
@@ -173,6 +232,10 @@
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.menu-button:hover {
+  background-color: #dddddd;
 }
 
 .post-menu {
@@ -219,15 +282,6 @@
   margin-top: 14px;
 }
 
-.edit-box input,
-.edit-box textarea {
-  padding: 12px;
-  border-radius: 12px;
-  border: 1px solid #dddddd;
-  font-size: 14px;
-  outline: none;
-}
-
 .edit-box textarea {
   min-height: 90px;
   resize: vertical;
@@ -248,6 +302,10 @@
   font-weight: bold;
 }
 
+.cancel-button:hover {
+  background-color: #dddddd;
+}
+
 .post-button {
   padding: 12px 22px;
   border-radius: 25px;
@@ -256,4 +314,19 @@
   color: white;
   cursor: pointer;
   font-weight: bold;
+}
+
+.accept-button {
+  background-color: #2f2070;
+  color: white;
+  border: none;
+  padding: 7px 13px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.accept-button:hover {
+  background-color: #050018;
 }
